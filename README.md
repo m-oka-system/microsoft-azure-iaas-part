@@ -41,7 +41,7 @@ uv run python src/app.py      # http://127.0.0.1:5000
 
 ### Azure で動かす
 
-デプロイ先のリソースグループを宣言してから、Azure Cloud Shell（Bash）で 1 行実行すると、完成形の環境ができます。
+デプロイ先のリソースグループを宣言してから、Azure Cloud Shell（Bash）で実行すると、完成形の環境ができます。
 
 ```bash
 export TF_VAR_resource_group_name="rg-iaas"
