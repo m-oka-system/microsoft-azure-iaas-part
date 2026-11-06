@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ラボ環境を構築する。各ラボの setup.sh から呼ばれる
+# ハンズオン環境を構築する。各ラボの setup.sh から呼ばれる
 # 引数はリポジトリルートから見たラボのパス（例: labs/sections/section08）
 set -euo pipefail
 
@@ -45,7 +45,7 @@ run_az() {
 }
 
 # 数値でなければ比較が終了コード 2 を返すが、if の条件内では set -e が止めない
-# 判定を素通りして誤ったリソースグループへ apply するため、形式を先に検証する
+# 判定を素通りして、空かどうかを確かめずに apply するため、形式を先に検証する
 require_number() {
   # $1: 値, $2: 何を取得しようとしたか
   if ! [[ "$1" =~ ^[0-9]+$ ]]; then
@@ -69,28 +69,18 @@ if [ ! -d "$LAB_DIR" ]; then
     "  git -C \"${REPO_ROOT}\" reset --hard FETCH_HEAD"
 fi
 
-# リソースグループを決める
-# 事前に export されていればそれを使い、未設定ならコース内ラボ環境とみなして唯一のものを探す
+# リソースグループは事前に宣言させる。唯一のものを自動で検出することはしない
+# 受講者のサブスクリプションには他のリソースグループが同居し得るため、唯一であることを前提にできない
 if [ -z "${TF_VAR_resource_group_name:-}" ]; then
-  rg_count="$(run_az az group list --query "length(@)" -o tsv)"
-  require_number "$rg_count" "リソースグループの数"
-
-  # コース内ラボ環境ではリソースグループが 1 つだけのため、ここに来るのはご自身のサブスクリプションで未指定の場合
-  if [ "$rg_count" -ne 1 ]; then
-    abort "リソースグループを特定できませんでした（現在 ${rg_count} 個）。" \
-      "使用するリソースグループ名を指定してから、もう一度実行してください。" \
-      "" \
-      '  export TF_VAR_resource_group_name="<リソースグループ名>"'
-  fi
-
-  TF_VAR_resource_group_name="$(run_az az group list --query "[0].name" -o tsv)"
-  export TF_VAR_resource_group_name
+  abort "デプロイ先のリソースグループが指定されていません。" \
+    "リソースグループ名を宣言してから、もう一度実行してください。" \
+    "" \
+    '  export TF_VAR_resource_group_name="rg-iaas"'
 fi
 
 # 代入で受ける。if の条件内でコマンド置換すると set -e が抑止され、run_az の abort がサブシェルで止まる
 group_exists="$(run_az az group exists --name "$TF_VAR_resource_group_name")"
 
-# 自動検出したものは必ず存在するため、ここに来るのは名前を指定された場合だけ
 # az group create は既存のグループにも成功するが、場所が違うと失敗するため、無いときだけ作る
 # 場所は variables.tf の location の既定値と揃える
 if [ "$group_exists" != "true" ]; then
@@ -121,7 +111,10 @@ if [ ! -s "${LAB_DIR}/terraform.tfstate" ]; then
       "" \
       "サブスクリプション: ${subscription}" \
       "" \
-      "このラボを実行済みの場合は、Azure ポータルでリソースグループごと削除してからやり直してください。" \
+      "前のセクションで作ったリソースが残っている場合は、Azure ポータルでリソースグループごと削除してからやり直してください。" \
+      "ラボを適用する時点で空であることを求めています。片付けをリソースグループごとの削除に統一しているためです。" \
+      "" \
+      "このラボを実行済みの場合も、同じく削除してからやり直してください。" \
       "作成済みのリソースの記録（${LAB_DIR}/terraform.tfstate）が残っていないため、同じ名前で作り直そうとして失敗します。"
   fi
 fi

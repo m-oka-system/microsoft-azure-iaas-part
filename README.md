@@ -23,13 +23,13 @@ Azure の [動画講座](https://www.udemy.com/course/microsoft-azure-iaas-part/
 
 - Azure VM（Ubuntu 24.04 LTS） / nginx（リバースプロキシ）
 - Azure SQL Database（サーバーレス・無料オファー）
-- Terraform（コース内ラボの環境構築）
+- Terraform（ハンズオン環境の構築）
 
 バージョンと調達元は[設計書の「技術スタック」](docs/design.md#1-技術スタック)にあります。
 
 ## デプロイ
 
-**どちらも講師のデバッグ用です。** 受講者が演習で使うラボは [`labs/README.md`](labs/README.md) にあります。
+**どちらも講師のデバッグ用です。** 受講者が演習で使うハンズオン環境は [`labs/README.md`](labs/README.md) にあります。
 
 ### ローカルで動かす
 
@@ -41,9 +41,10 @@ uv run python src/app.py      # http://127.0.0.1:5000
 
 ### Azure で動かす
 
-Azure Cloud Shell（Bash）で 1 行実行すると、完成形の環境ができます。
+デプロイ先のリソースグループを宣言してから、Azure Cloud Shell（Bash）で実行すると、完成形の環境ができます。
 
 ```bash
+export TF_VAR_resource_group_name="rg-iaas"
 curl -fsSL https://raw.githubusercontent.com/m-oka-system/microsoft-azure-iaas-part/refs/heads/main/labs/sections/section99/setup.sh | bash
 ```
 
@@ -68,7 +69,7 @@ az group delete --name <resource-group-name> --yes
 │   ├── vmss-portal-setup.sh # VMSS 用
 │   ├── todo.service      #   systemd unit
 │   └── todo.nginx.conf   #   nginx の設定
-├── labs/                 # コース内ラボ
+├── labs/                 # ハンズオン環境
 │   ├── modules/          #   全ラボで共有する Terraform モジュール
 │   └── sections/         #   演習ごとの Terraform
 ├── reference/            # 受講者向けの補足資料（コマンド集・参考サイト）
