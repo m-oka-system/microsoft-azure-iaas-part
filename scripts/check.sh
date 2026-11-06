@@ -218,9 +218,13 @@ check_docs() {
   # リポジトリ内のリンクが実在するか確認する。外部 URL とアンカーだけの参照は対象外
   # タイトル付き [a](path "title")・山括弧 [a](<path>)・参照リンク [a][id] は扱わない
   # 教材の文書ではこれらの記法を使わない取り決めのため、使い始めたらここも直す
+  #
+  # reference/ のファイル名はスペースを含み、リンクでは %20 へエンコードされる
+  # デコードせずに照合すると、実在するファイルが壊れたリンクとして報告される
   while IFS= read -r -d '' file; do
     while IFS= read -r target; do
       [ -z "${target%%#*}" ] && continue
+      target="${target//%20/ }"
       resolved="$(dirname "$file")/${target%%#*}"
       [ -e "$resolved" ] || broken="${broken}${file}: ${target}"$'\n'
     done < <(grep -oE '\]\([^)#][^)]*\)' "$file" | sed -E 's/^\]\(//; s/\)$//' | grep -vE '^(https?|mailto):' || true)

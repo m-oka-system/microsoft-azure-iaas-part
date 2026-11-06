@@ -1,67 +1,88 @@
 # 作りながら覚える Microsoft Azure 入門講座（IaaS 編）
 
-Udemy コース「[作りながら覚える Microsoft Azure 入門講座（IaaS 編）](https://www.udemy.com/course/microsoft-azure-iaas-part/)」の教材リポジトリです。
+Azure の [動画講座](https://www.udemy.com/course/microsoft-azure-iaas-part/) で取り上げる Todo アプリと、環境構築に使用する Terraform のソースコードを管理するリポジトリです。
 
-**補足資料・コース内ラボ・Todo アプリ・デプロイスクリプトの 4 つが入っています。**
+シンプルな Todo アプリの構築を通じて、仮想マシンの作成から Web サーバーとデータベースの構築、ロードバランサーによる負荷分散、仮想マシンスケールセットによる自動スケールまでを学習します。
 
-## 目的別の入口
+![Todo アプリの画面](./images/todo.png)
 
-| やりたいこと                             | 場所                                                                                |
-| ---------------------------------------- | ----------------------------------------------------------------------------------- |
-| 動画で出てきたコマンドや参考サイトを見る | [`reference/`](reference/README.md)                                                 |
-| コース内ラボの演習環境を作る             | [`labs/`](labs/README.md)                                                           |
-| Todo アプリを自分の環境に構築する        | [`docs/build-todo-app.md`](docs/build-todo-app.md)                                  |
-| VM 上のアプリを更新する                  | [`deploy/README.md`](deploy/README.md)                                              |
-| うまく動かないときの対処を探す           | [`docs/troubleshooting.md`](docs/troubleshooting.md)                                |
-| アプリの仕様を知る                       | [`docs/requirements.md`](docs/requirements.md) / [`docs/design.md`](docs/design.md) |
+## インフラ構成図
 
-## Todo アプリについて
+![インフラ構成図](./images/infra.png)
 
-**インフラが正しく動いているかを目で確かめるための、できるだけ小さな題材です。** タスクの一覧・追加・完了状態の変更・削除ができます。ログイン認証はありません。
+## 使用技術
 
-```mermaid
-flowchart LR
-    A[ブラウザ] --> B[nginx]
-    B --> C[gunicorn + Flask]
-    C --> D[(Azure SQL Database)]
-    E[Cloud Shell] -->|SSH| F[Azure VM]
+アプリ
+
+- Python 3.12 / Flask（サーバーサイドレンダリング）
+- SQLAlchemy Core / pyodbc（ORM は使いません）
+- gunicorn（WSGI サーバー）
+- uv（パッケージ管理）
+
+インフラ
+
+- Azure VM（Ubuntu 24.04 LTS） / nginx（リバースプロキシ）
+- Azure SQL Database（サーバーレス・無料オファー）
+- Terraform（コース内ラボの環境構築）
+
+バージョンと調達元は[設計書の「技術スタック」](docs/design.md#1-技術スタック)にあります。
+
+## デプロイ
+
+**どちらも講師のデバッグ用です。** 受講者が演習で使うラボは [`labs/README.md`](labs/README.md) にあります。
+
+### ローカルで動かす
+
+```bash
+uv sync
+cp src/.env.sample src/.env   # 接続情報を記入する
+uv run python src/app.py      # http://127.0.0.1:5000
 ```
 
-VM では nginx がブラウザからの要求を受け、gunicorn へ転送します。**gunicorn は Flask アプリを常駐させる WSGI サーバーです。** Flask に付属する開発用サーバーは本番向けではないため、VM では使いません。
+### Azure で動かす
 
-**画面の下端に、応答した VM のホスト名とプライベート IP、接続先のデータベース名が出ます。** ロードバランサやスケールセットの章で、どの VM が応答したかを見分けるための表示です。
+Azure Cloud Shell（Bash）で 1 行実行すると、完成形の環境ができます。
 
-> [!CAUTION]
-> このアプリにはログイン認証がありません。URL に到達した人は誰でもタスクを追加・削除できます。
-> 動作確認用のタスク以外を入力せず、**確認が終わったらリソースグループごと削除してください。**
+```bash
+curl -fsSL https://raw.githubusercontent.com/m-oka-system/microsoft-azure-iaas-part/refs/heads/main/labs/sections/section99/setup.sh | bash
+```
 
-## ディレクトリ構成
+## クリーンアップ
+
+Azure ポータルまたは Azure CLI で、リソースグループごと削除します。
+
+```bash
+az group delete --name <resource-group-name> --yes
+```
+
+## プロジェクト構造
 
 ```text
 .
-├── reference/   # 補足資料（セクションごとのコマンド集・参考サイト）
-├── labs/        # コース内ラボ（Terraform）
-│   ├── modules/ #   全ラボで共有する Terraform モジュール
-│   └── sections/
-├── src/         # Todo アプリのソースコード
-├── deploy/      # VM の中へアプリを配置するスクリプト
-├── docs/        # アプリの仕様と構築手順
-└── scripts/     # ラボ共通の起動処理と検証
+├── src/                  # Todo アプリ
+│   ├── app.py            #   アプリ本体（1 ファイルで完結）
+│   ├── .env.sample       #   接続情報のテンプレート
+│   └── templates/        #   一覧・エラーの案内・実行環境の表示
+├── deploy/               # VM の中へアプリを配置するスクリプト
+│   ├── setup.sh          #   VM 用
+│   ├── vmss-portal-setup.sh # VMSS 用
+│   ├── todo.service      #   systemd unit
+│   └── todo.nginx.conf   #   nginx の設定
+├── labs/                 # コース内ラボ
+│   ├── modules/          #   全ラボで共有する Terraform モジュール
+│   └── sections/         #   演習ごとの Terraform
+├── reference/            # 受講者向けの補足資料（コマンド集・参考サイト）
+├── docs/                 # 要件定義書・設計書
+├── tests/                # pytest
+└── scripts/              # ラボ共通の起動処理と検証
 ```
 
-**置き場所で役割が決まります。**
+## 開発
 
-| 場所         | 答える問い                               |
-| ------------ | ---------------------------------------- |
-| `reference/` | セクションで出てきた用語とコマンドは何か |
-| `labs/`      | コース内ラボの環境をどう作るか           |
-| `docs/`      | どう作られているか / どうすれば動くか    |
-| `deploy/`    | VM の中へどう配置するか                  |
+```bash
+uv run pytest                                 # テスト
+uvx ruff check --fix . && uvx ruff format .   # 静的解析と整形
+./scripts/check.sh                            # コミット前の検証（全項目）
+```
 
-## 関連リポジトリ
-
-| リポジトリ                                                                         | 内容                             |
-| ---------------------------------------------------------------------------------- | -------------------------------- |
-| [udemy-in-course-labs](https://github.com/m-oka-system/udemy-in-course-labs)       | 他コースのコース内ラボ           |
-| [python-flask-mysql-todo](https://github.com/m-oka-system/python-flask-mysql-todo) | 移植元の Todo アプリ（MySQL 版） |
-| [udemy-azure-iaas](https://github.com/m-oka-system/udemy-azure-iaas)               | 旧版の補足資料                   |
+`check.sh` は Terraform の `validate`、プロバイダのバージョン固定、シークレットの混入、シェルの構文、Python、文書内のリンクをまとめて検証します。CI は導入していないため、これが唯一の機械的な検証です。
