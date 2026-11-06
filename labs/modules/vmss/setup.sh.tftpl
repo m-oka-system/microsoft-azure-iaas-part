@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# 拡張機能（CustomScript）が各 VM で実行する
+#
+# このファイルは labs/modules/vm/setup.sh.tftpl と同じ内容を持つ
+# シンボリックリンクにすると Windows で clone したときに実体を失うため、あえて二重に置く
+# ポータルへ貼り付ける版が deploy/vmss-portal-setup.sh にある
+# あちらはカスタム データ欄が ASCII しか受け付けないため、コメントが英語になっている
+# 変更するときは 3 つとも直す
+#
+# このファイルは Terraform の templatefile() で展開する
+# bash の変数を使う場合は $${VAR} と書く。$${} でないと Terraform が先に解釈する
+#
+# Terraform の補間は shellcheck から未代入の変数に見えるため、SC2154 を無効にする
+# shellcheck disable=SC2154
+set -euo pipefail
+
+# apt はここでは呼ばない。git は Ubuntu 24.04 のイメージに含まれている
+# 自動更新の停止・ロックの再試行・DEBIAN_FRONTEND は、apt を実際に使う deploy/setup.sh が自前で持つ
+
+# 一時ディレクトリへ取得する
+# setup.sh が /opt/todo へコピーを済ませれば用済みのため、残さない
+# 使い捨ての環境で、VM 上で git pull して更新する運用を想定しないため
+repo_dir="$(mktemp -d)"
+git clone --depth 1 "${app_repository_url}" "$repo_dir"
+cd "$repo_dir"
+
+# 接続情報を一時ファイルへ書き出す
+# 値を引数に書くと ps の出力に残るため、パスだけを渡す
+# 標準入力は使えない。setup.sh の中の apt-get などが先に消費しうるため
+# mktemp が作るファイルは 600 のため、書き込む前から所有者以外は読めない
+env_file="$(mktemp)"
+cat > "$env_file" <<'ENVFILE'
+DB_HOST=${db_host}
+DB_NAME=${db_name}
+DB_USER=${db_user}
+DB_PASSWORD=${db_password}
+ENVFILE
+
+# ODBC ドライバ・nginx・uv の導入から systemd への登録までを行う
+# --env-file を渡すと、接続情報の配置までスクリプトの中で終わる
+# サービスを起動する時点で .env が揃うため、あとから再起動する必要がない
+"$repo_dir/deploy/setup.sh" --env-file "$env_file"
+
+rm -f "$env_file"
+
+# 取得したリポジトリを削除する。アプリの本体は /opt/todo にコピー済みのため
+# 途中で失敗した場合は削除まで到達せず、調査のために残る
+cd /
+rm -rf "$repo_dir"

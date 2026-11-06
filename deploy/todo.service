@@ -1,0 +1,69 @@
+# Flask の Todo アプリを gunicorn で常駐させる systemd unit
+# /etc/systemd/system/todo.service へ配置する（deploy/setup.sh が行う）
+
+[Unit]
+Description=Flask Todo アプリ（gunicorn）
+Documentation=https://docs.gunicorn.org/en/stable/settings.html
+# Azure SQL Database へ接続するため、ネットワークが使える状態になるまで待つ
+Wants=network-online.target
+After=network-online.target
+
+# app.py の構文エラーのように、再起動しても直らない失敗を failed 状態として検出できるようにする
+# 既定の制限（10 秒間に 5 回）では RestartSec=5 の間隔に引っかからず、永久に再起動を繰り返して systemctl is-active が通ってしまう
+# この 2 つは [Service] ではなく [Unit] の設定（systemd 229 で移動した）
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+# ExecStart の起動が完了するまで systemd が待つため、パスの誤りをすぐに検出できる
+Type=exec
+
+# root では起動しない。アプリ専用の低権限ユーザーを使う
+User=todo
+Group=todo
+
+# uv プロジェクトのルート。uv run はここの pyproject.toml と uv.lock、それに uv sync が作った .venv を使う
+WorkingDirectory=/opt/todo
+
+# 接続情報は /opt/todo/src/.env（パーミッション 600）に一本化する
+# Environment= や EnvironmentFile= では渡さない
+# app.py が load_dotenv() で読むため、併用するとどちらが効いているのか追えなくなる
+#
+# FLASK_DEBUG はどこにも書かない
+# 値が 1 になると Werkzeug のデバッガが有効になり、ブラウザの画面から任意のコードを実行できる状態になる
+#
+# uv 側の指定
+#   --frozen            uv.lock のバージョンをそのまま使う
+#   --no-dev            ruff と pytest を対象から外す。setup.sh の uv sync も
+#                       --no-dev で入れているため、指定しないと初回起動時に
+#                       uv が入れ直す。uv run は不足分を足すだけで余分は
+#                       削除しないため、減らす側は uv sync の担当
+#
+# gunicorn の設定は引数で渡す（gunicorn.conf.py は作らない）
+#   --chdir src         gunicorn が src を sys.path に入れてから app:app を
+#                       import する。src/.env は app.py がパスを明示して読むため、
+#                       起動場所には依存しない
+#   --bind              ループバックだけで待ち受ける。0.0.0.0 にすると、認証の
+#                       ないアプリが nginx を経由せずネットワークへ公開される
+#   --workers 3         gunicorn 公式の目安（2 × CPU + 1）どおり。VM は 1 vCPU
+#                       だが、DB 待ちでワーカーが数十秒塞がるため、1 つでは
+#                       1 人の操作でアプリ全体が無応答になる
+#   --timeout 150       既定は 30 秒。停止した Azure SQL の再開を待つリトライは
+#                       1 接続あたり最悪 70 秒、一覧の表示では接続を 2 回張るため
+#                       140 秒かかる。既定のままではその最中にワーカーが
+#                       SIGKILL され、画面には 500 が返る
+#                       「アプリ 140 秒 < gunicorn 150 秒 < nginx 180 秒」の順に
+#                       長くする（nginx 側は proxy_read_timeout）
+#   --access-logfile -  標準出力へ出し、journalctl -u todo から読めるようにする
+#                       既定では 1 行も出ない。--access-logformat は指定しない
+#                       systemd は % をスペシファイアとして解釈するため、書式指定子を
+#                       そのまま書くと unit の読み込みに失敗する
+ExecStart=/usr/local/bin/uv run --frozen --no-dev gunicorn --chdir src \
+    --bind 127.0.0.1:8000 --workers 3 --timeout 150 --access-logfile - app:app
+
+# 異常終了しても自動で復旧させる。再起動の頻度の上限は [Unit] で設定している
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

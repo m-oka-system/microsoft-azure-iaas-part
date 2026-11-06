@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo アプリ</title>
+  {# バージョンを固定する #}
+  {# 無指定の URL は 3.4.17 へリダイレクトされる #}
+  {# 将来 CDN 側の既定が変わると、教材の画面と受講者の画面が食い違う #}
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+</head>
+
+{# pb-32 は画面下端へ固定した実行環境の表示と一覧が重ならないための余白 #}
+
+<body class="bg-gray-100 min-h-screen pb-32">
+  <div class="container mx-auto px-4 py-8 max-w-2xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Todoリスト</h1>
+
+    {# 入力を拒否したときのメッセージ。flash() は使わず、変数で受け取る #}
+    {% if error %}
+    <div class="mb-4 px-4 py-3 rounded-lg bg-red-100 border border-red-300 text-red-700">
+      {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="{{ url_for('add') }}" method="POST" class="mb-8">
+      <div class="flex gap-2">
+        <input type="text" name="title" placeholder="新しいタスクを入力..."
+          class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          required maxlength="255">
+        <button type="submit"
+          class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
+          追加
+        </button>
+      </div>
+    </form>
+
+    <div class="space-y-3">
+      {% for todo in todos %}
+      <div class="flex items-center justify-between bg-white p-4 rounded-lg shadow-sm">
+        <div class="flex items-center gap-3">
+          {# 完了状態の変更は POST で送る #}
+          {# GET リンクにすると、ブラウザのプリフェッチやクローラのアクセスだけで状態が変わる #}
+          <form action="{{ url_for('complete', todo_id=todo.id) }}" method="POST" class="flex items-center">
+            {# 完了済みなら 0（未完了に戻す）、未完了なら 1（完了にする）を送る。反転はしない #}
+            <input type="hidden" name="completed" value="{{ '0' if todo.completed else '1' }}">
+            <button type="submit"
+              class="bg-transparent border-0 p-0 cursor-pointer text-gray-400 hover:text-blue-500 transition-colors duration-200">
+              {% if todo.completed %}
+              <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              {% else %}
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+              </svg>
+              {% endif %}
+            </button>
+          </form>
+          <span class="{% if todo.completed %}line-through text-gray-400{% endif %}">
+            {{ todo.title }}
+          </span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-gray-500">
+            {{ todo.created_at_jst.strftime('%Y/%m/%d %H:%M') }}
+          </span>
+          {# 削除も POST で送る #}
+          <form action="{{ url_for('delete', todo_id=todo.id) }}" method="POST" class="flex items-center">
+            <button type="submit"
+              class="bg-transparent border-0 p-0 cursor-pointer text-red-400 hover:text-red-600 transition-colors duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                </path>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% include "debug_info.html" %}
+  </div>
+</body>
+
+</html>

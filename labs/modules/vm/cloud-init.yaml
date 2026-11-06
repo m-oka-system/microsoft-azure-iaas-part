@@ -1,0 +1,19 @@
+#cloud-config
+# install_app_enabled = false のときだけ使う。アプリを入れず、VM の疎通だけを確認する構成向け
+#
+# apt のロック対策を書いていないのは、cloud-init が自前で待つため
+# dpkg の 2 つと apt の 2 つ（archives/lock と lists/lock）を実際に取得して確かめる
+# 空くまで 1 秒ごとに再確認し、最大 30 秒待つ（distros/package_management/apt.py）
+# 起動直後は esm-cache と apt-news がロックを持つが、この待機で吸収される
+#
+# deploy/setup.sh が自前でロック対策を持つのは、cloud-init を通らないため
+# 拡張機能から呼ばれる経路では apt-get を直接実行する
+#
+# このファイルの処理が失敗しても terraform apply は成功する
+# cloud-init の結果は Azure のプロビジョニング状態に反映されないため
+# nginx が応答しないときは VM 上で次を確認する
+#   cloud-init status --long
+#   sudo cat /var/log/cloud-init-output.log
+package_update: true
+packages:
+  - nginx

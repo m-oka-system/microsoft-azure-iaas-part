@@ -1,0 +1,19 @@
+{# 実行環境の情報。構築したインフラの動作を確認するために常に表示する #}
+{# 表示を切り替える仕組みは持たない。教材では常に見えていることを前提にする #}
+{# DB のサーバー名・ユーザー名・パスワードは出さない。HTTP 80 はインターネットへ公開している #}
+{# 画面の下端へ固定する。一覧が伸びてもスクロールせずに読める #}
+{# 背景を濃くして、アプリの機能ではないことを見た目で区別する #}
+{# 一覧と重ならないよう、body の下側に余白（pb-32）を取ってある #}
+<div class="fixed inset-x-0 bottom-0 border-t-4 border-gray-600 bg-gray-800 px-4 py-4">
+  <div class="container mx-auto max-w-2xl">
+    <p class="mb-2 text-xs font-bold tracking-wide text-gray-400">実行環境</p>
+    <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 font-mono text-xs text-gray-200">
+      <dt class="text-gray-400">ホスト名</dt>
+      <dd>{{ debug.hostname }}</dd>
+      <dt class="text-gray-400">プライベート IP</dt>
+      <dd>{{ debug.private_ip }}</dd>
+      <dt class="text-gray-400">DB 名</dt>
+      <dd>{{ debug.db_name }}</dd>
+    </dl>
+  </div>
+</div>

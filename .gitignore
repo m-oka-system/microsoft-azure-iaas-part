@@ -1,0 +1,44 @@
+# AI
+.claude/
+.github/
+AGENTS.md
+CLAUDE.md
+claudedocs/
+
+# 教材に含めない開発用ファイル
+tests/
+
+# シークレット
+.env
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Terraform
+# 演習ごとにルートが増えるため、パスを限定せずパターンで指定する
+**/.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+*.tfplan
+*.tfplan.*
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# OS
+.DS_Store

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo アプリ</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+</head>
+
+{# pb-32 は画面下端へ固定した実行環境の表示と本文が重ならないための余白 #}
+
+<body class="bg-gray-100 min-h-screen pb-32">
+  <div class="container mx-auto px-4 py-8 max-w-2xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Todoリスト</h1>
+
+    {# 例外の詳細は表示しない #}
+    {# ODBC のエラーメッセージにはサーバー名やユーザー名が含まれるため、対処法だけを案内する #}
+    <div class="bg-white p-6 rounded-lg shadow-sm">
+      <div class="px-4 py-3 rounded-lg bg-red-100 border border-red-300 text-red-700">
+        <p>{{ message }}</p>
+        {# 確認する順に並べる。その場で直せるものだけを載せる #}
+        <ul class="list-disc list-outside mt-2 ml-5 space-y-1">
+          {% for check in checks %}
+          <li>{{ check }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <a href="{{ url_for('index') }}"
+        class="inline-block mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
+        再読み込み
+      </a>
+    </div>
+
+    {# 接続できないときこそ、どのホストがどの DB を見に行ったかが要る #}
+    {% include "debug_info.html" %}
+  </div>
+</body>
+
+</html>

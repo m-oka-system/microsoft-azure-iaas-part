@@ -1,0 +1,26 @@
+[project]
+name = "flask-mssql-todo"
+version = "0.1.0"
+description = "Flask と Azure SQL Database で作る Todo アプリ"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.1.3",
+    "sqlalchemy>=2.0.44",
+    "pyodbc>=5.2.0",
+    "python-dotenv>=1.2.1",
+    "gunicorn>=26.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.5",
+    "pytest>=8.4.2",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
