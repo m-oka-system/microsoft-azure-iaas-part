@@ -118,7 +118,7 @@ chmod 400 ~/.ssh/ssh-key.pem
 
 #### 5-2. `.env` を作る
 
-**[コース内ラボ](../labs/sections/section08/README.md)から進んできた場合、この手順は不要です。** `terraform apply` が接続情報を `~/mssql-todo-app/src/.env` へ書き出しています。5-3 へ進んでください。
+**[コース内ラボ](../labs/sections/section08/README.md)から進んできた場合、この手順は不要です。** `terraform apply` が接続情報を `~/microsoft-azure-iaas-part/src/.env` へ書き出しています。5-3 へ進んでください。
 
 ```bash
 code ~/.env
@@ -172,11 +172,11 @@ ssh -i ~/.ssh/ssh-key.pem azureuser@<VM のパブリック IP>
 
 ### 8. アプリの取得
 
-**SSH で VM に接続した状態で**実行します。ホームディレクトリに `mssql-todo-app/` ができます。
+**SSH で VM に接続した状態で**実行します。ホームディレクトリに `microsoft-azure-iaas-part/` ができます。
 
 ```bash
-git clone --depth 1 https://github.com/m-oka-system/mssql-todo-app.git
-cd mssql-todo-app
+git clone --depth 1 https://github.com/m-oka-system/microsoft-azure-iaas-part.git
+cd microsoft-azure-iaas-part
 ```
 
 **git の導入は不要です。** Ubuntu Server 24.04 LTS のイメージに含まれています。

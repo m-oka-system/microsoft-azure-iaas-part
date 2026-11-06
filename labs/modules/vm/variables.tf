@@ -22,7 +22,7 @@ variable "admin_username" {
 # アプリの取得元。公開リポジトリのため認証はいらない
 variable "app_repository_url" {
   type    = string
-  default = "https://github.com/m-oka-system/mssql-todo-app.git"
+  default = "https://github.com/m-oka-system/microsoft-azure-iaas-part.git"
 }
 
 # アプリを配置するかどうか

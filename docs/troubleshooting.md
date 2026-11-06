@@ -281,7 +281,7 @@ sudo tail -30 /var/lib/waagent/custom-script/download/0/stderr
 **原因を直したら、同じ Cloud Shell のセッションで作り直します。**
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section99
+cd ~/microsoft-azure-iaas-part/labs/sections/section99
 export TF_VAR_resource_group_name="<リソースグループ名>"
 terraform apply
 ```

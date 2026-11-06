@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo_dir="$(mktemp -d)"
-git clone --depth 1 https://github.com/m-oka-system/mssql-todo-app.git "$repo_dir"
+git clone --depth 1 https://github.com/m-oka-system/microsoft-azure-iaas-part.git "$repo_dir"
 cd "$repo_dir"
 
 env_file="$(mktemp)"

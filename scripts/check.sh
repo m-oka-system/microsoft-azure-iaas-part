@@ -211,15 +211,8 @@ check_python() {
   uvx ruff format --check . > /dev/null
   report "ruff format --check" $?
 
-  # tests/ は .gitignore の対象のため、クリーンな clone には存在しない
-  # 無条件に実行すると収集ゼロ（終了コード 5）で必ず失敗する
-  if [ -d tests ]; then
-    uv run pytest -q > /dev/null
-    report "pytest" $?
-  else
-    echo "  SKIP: pytest（tests/ がありません。git 管理外のため clone には含まれません）" >&2
-    skipped=1
-  fi
+  uv run pytest -q > /dev/null
+  report "pytest" $?
 }
 
 check_docs() {

@@ -48,7 +48,7 @@
 3. 次のコマンドを実行します（5〜10 分かかります）
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/m-oka-system/mssql-todo-app/refs/heads/main/labs/sections/section99/setup.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/m-oka-system/microsoft-azure-iaas-part/refs/heads/main/labs/sections/section99/setup.sh | bash
    ```
 
 4. `Apply complete!` と表示されたら作成完了です
@@ -57,7 +57,7 @@
 
 **スクリプトと Terraform は、初回にリポジトリの最新版（`main`）を取得します。** 版を固定していないため、教材を改訂すると動画の収録時と異なる場合があります。**Azure プロバイダのバージョンだけは固定しています。**
 
-**2 回目以降は取得し直しません。** 取得済みのものをそのまま使い、`terraform apply` を実行します。差分がなければ `No changes.` と表示されて終わります。**最新版で試したい場合は、`~/mssql-todo-app` を削除してから実行してください。**
+**2 回目以降は取得し直しません。** 取得済みのものをそのまま使い、`terraform apply` を実行します。差分がなければ `No changes.` と表示されて終わります。**最新版で試したい場合は、`~/microsoft-azure-iaas-part` を削除してから実行してください。**
 
 ## Challenge
 
@@ -79,7 +79,7 @@ Azure ポータルでリソースグループを開き、次が作られてい�
 `terraform apply` を実行したディレクトリで、出力を確認します。
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section99
+cd ~/microsoft-azure-iaas-part/labs/sections/section99
 terraform output -raw app_url
 ```
 
@@ -132,7 +132,7 @@ terraform output -raw ssh_command
 **ストレージをマウントしている場合は残り続けます。** 次を実行して消してください。
 
 ```bash
-rm -rf ~/mssql-todo-app ~/.ssh/sshkey-vm.pem
+rm -rf ~/microsoft-azure-iaas-part ~/.ssh/sshkey-vm.pem
 ```
 
 ## 補足
@@ -140,7 +140,7 @@ rm -rf ~/mssql-todo-app ~/.ssh/sshkey-vm.pem
 **`terraform apply` を実行した端末の IP は自動で許可されます。** 別の端末からも接続する場合は、`setup.sh` ではなく手で実行し、変数を追加します。
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section99
+cd ~/microsoft-azure-iaas-part/labs/sections/section99
 export TF_VAR_resource_group_name="<リソースグループ名>"
 terraform apply -var='allowed_client_ip=["<IP>"]'
 ```

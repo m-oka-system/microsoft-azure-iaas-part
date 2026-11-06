@@ -5,9 +5,6 @@ AGENTS.md
 CLAUDE.md
 claudedocs/
 
-# 教材に含めない開発用ファイル
-tests/
-
 # シークレット
 .env
 *.pem

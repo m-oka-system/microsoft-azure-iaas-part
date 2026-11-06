@@ -54,7 +54,7 @@ flowchart TD
 **手作業で構築した VM の場合です。** リポジトリが更新されたときは、VM 上で 1 行実行します。
 
 ```bash
-cd ~/mssql-todo-app && git pull && sudo deploy/setup.sh
+cd ~/microsoft-azure-iaas-part && git pull && sudo deploy/setup.sh
 ```
 
 **何度実行しても同じ結果になります。** 依存パッケージの更新とサービスの再起動まで行うため、`systemctl restart` を別に打つ必要はありません。

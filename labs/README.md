@@ -24,7 +24,7 @@
 各ラボの手順書にあるコマンドを、Azure Cloud Shell（Bash）で実行します。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/m-oka-system/mssql-todo-app/refs/heads/main/<ラボのパス>/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/m-oka-system/microsoft-azure-iaas-part/refs/heads/main/<ラボのパス>/setup.sh | bash
 ```
 
 ### リソースグループの決まり方

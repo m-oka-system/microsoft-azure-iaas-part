@@ -3,7 +3,7 @@
 set -euo pipefail
 
 readonly LAB_PATH="labs/sections/section99"
-readonly REPO_URL="https://github.com/m-oka-system/mssql-todo-app.git"
+readonly REPO_URL="https://github.com/m-oka-system/microsoft-azure-iaas-part.git"
 # 改名したときに直す箇所を 1 つに保つため、置き場所は URL から導く
 REPO_DIR="${HOME}/$(basename "$REPO_URL" .git)"
 readonly REPO_DIR

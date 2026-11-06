@@ -56,7 +56,7 @@
 3. 次のコマンドを実行します（3〜5 分かかります）
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/m-oka-system/mssql-todo-app/refs/heads/main/labs/sections/section10/setup.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/m-oka-system/microsoft-azure-iaas-part/refs/heads/main/labs/sections/section10/setup.sh | bash
    ```
 
 4. `Apply complete!` と表示されたら作成完了です
@@ -116,7 +116,7 @@ Azure ポータルでリソースグループを開き、次が作られてい�
 カスタム データは次のコマンドで表示します。**`terraform apply` の最後に `show_custom_data` として表示されるものと同じです。**
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section10 && terraform output -raw vmss_custom_data
+cd ~/microsoft-azure-iaas-part/labs/sections/section10 && terraform output -raw vmss_custom_data
 ```
 
 **`terraform apply` の最後に `vmss_custom_data = <sensitive>` と出るのは正常です。** データベースのパスワードを含むため、中身は画面に出しません。**`-raw` を付けて取り出します。** 付けないとここでも `<sensitive>` としか表示されません。
@@ -250,7 +250,7 @@ az vmss list-instances -g "$RG" -n vmss -o table
 **ストレージをマウントしている場合は残り続けます。** 次を実行して消してください。
 
 ```bash
-rm -rf ~/mssql-todo-app ~/.ssh/sshkey-vm.pem
+rm -rf ~/microsoft-azure-iaas-part ~/.ssh/sshkey-vm.pem
 ```
 
 ## 補足
@@ -258,7 +258,7 @@ rm -rf ~/mssql-todo-app ~/.ssh/sshkey-vm.pem
 **`terraform apply` を実行した端末の IP は、SSH の受信規則へ自動で許可されます。** 別の端末からも操作する場合は、`setup.sh` ではなく手で実行し、変数を追加します。
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section10
+cd ~/microsoft-azure-iaas-part/labs/sections/section10
 export TF_VAR_resource_group_name="<リソースグループ名>"
 terraform apply -var='allowed_client_ip=["<IP>"]'
 ```

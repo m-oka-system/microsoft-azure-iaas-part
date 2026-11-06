@@ -49,7 +49,7 @@
 3. 次のコマンドを実行します（5〜10 分かかります）
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/m-oka-system/mssql-todo-app/refs/heads/main/labs/sections/section08/setup.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/m-oka-system/microsoft-azure-iaas-part/refs/heads/main/labs/sections/section08/setup.sh | bash
    ```
 
 4. `Apply complete!` と表示されたら作成完了です
@@ -58,7 +58,7 @@
 
 **スクリプトと Terraform は、初回にリポジトリの最新版（`main`）を取得します。** 版を固定していないため、教材を改訂すると動画の収録時と異なる場合があります。**Azure プロバイダのバージョンだけは固定しています。**
 
-**2 回目以降は取得し直しません。** 取得済みのものをそのまま使い、`terraform apply` を実行します。差分がなければ `No changes.` と表示されて終わります。**最新版で試したい場合は、`~/mssql-todo-app` を削除してから実行してください。**
+**2 回目以降は取得し直しません。** 取得済みのものをそのまま使い、`terraform apply` を実行します。差分がなければ `No changes.` と表示されて終わります。**最新版で試したい場合は、`~/microsoft-azure-iaas-part` を削除してから実行してください。**
 
 ## Challenge
 
@@ -80,7 +80,7 @@ Azure ポータルでリソースグループを開き、次が作られてい�
 **`terraform apply` の最後に `next_steps` として表示されます。** 画面を流してしまった場合は、実行したディレクトリで取り出せます。
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section08
+cd ~/microsoft-azure-iaas-part/labs/sections/section08
 terraform output -raw next_steps
 ```
 
@@ -113,7 +113,7 @@ terraform output -raw next_steps
 
 **Cloud Shell と VM を行き来するのは 1 回だけです。** 手順 6 で接続したら、手順 7 の Azure ポータルでの操作を除いて VM 上で終わります。
 
-**手順 5-2（`.env` の作成）は不要です。** `terraform apply` が Cloud Shell の `~/mssql-todo-app/src/.env` へ書き出しています。
+**手順 5-2（`.env` の作成）は不要です。** `terraform apply` が Cloud Shell の `~/microsoft-azure-iaas-part/src/.env` へ書き出しています。
 
 **手順 5-3 と手順 6 で打つコマンドは、[`next_steps` の出力](#次に打つコマンドを確認する)の 2 番と 3 番です。** 鍵の名前と VM の IP はラボごとに変わるため、組み立てる必要はありません。
 
@@ -158,7 +158,7 @@ terraform output -raw next_steps
 **ストレージをマウントしている場合は残り続けます。** 次を実行して消してください。
 
 ```bash
-rm -rf ~/mssql-todo-app ~/.ssh/sshkey-vm.pem
+rm -rf ~/microsoft-azure-iaas-part ~/.ssh/sshkey-vm.pem
 ```
 
 ## 補足
@@ -166,7 +166,7 @@ rm -rf ~/mssql-todo-app ~/.ssh/sshkey-vm.pem
 **`terraform apply` を実行した端末の IP は、SSH の受信規則へ自動で許可されます。** 別の端末からも接続する場合は、`setup.sh` ではなく手で実行し、変数を追加します。
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section08
+cd ~/microsoft-azure-iaas-part/labs/sections/section08
 export TF_VAR_resource_group_name="<リソースグループ名>"
 terraform apply -var='allowed_client_ip=["<IP>"]'
 ```

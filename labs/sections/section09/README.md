@@ -50,7 +50,7 @@
 3. 次のコマンドを実行します（5〜10 分かかります）
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/m-oka-system/mssql-todo-app/refs/heads/main/labs/sections/section09/setup.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/m-oka-system/microsoft-azure-iaas-part/refs/heads/main/labs/sections/section09/setup.sh | bash
    ```
 
 4. `Apply complete!` と表示されたら作成完了です
@@ -77,7 +77,7 @@ Azure ポータルでリソースグループを開き、次が作られてい�
 **`terraform apply` の最後に `next_steps` として表示されます。** 画面を流してしまった場合は、実行したディレクトリで取り出せます。
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section09
+cd ~/microsoft-azure-iaas-part/labs/sections/section09
 terraform output -raw next_steps
 ```
 
@@ -137,7 +137,7 @@ terraform output -raw next_steps
 **ストレージをマウントしている場合は残り続けます。** 次を実行して消してください。
 
 ```bash
-rm -rf ~/mssql-todo-app ~/.ssh/sshkey-vm.pem
+rm -rf ~/microsoft-azure-iaas-part ~/.ssh/sshkey-vm.pem
 ```
 
 ## 補足
@@ -145,7 +145,7 @@ rm -rf ~/mssql-todo-app ~/.ssh/sshkey-vm.pem
 **`terraform apply` を実行した端末の IP は、SSH の受信規則へ自動で許可されます。** 別の端末からも接続する場合は、`setup.sh` ではなく手で実行し、変数を追加します。
 
 ```bash
-cd ~/mssql-todo-app/labs/sections/section09
+cd ~/microsoft-azure-iaas-part/labs/sections/section09
 export TF_VAR_resource_group_name="<リソースグループ名>"
 terraform apply -var='allowed_client_ip=["<IP>"]'
 ```

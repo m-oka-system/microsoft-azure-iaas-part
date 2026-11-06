@@ -51,7 +51,7 @@ variable "vmss" {
 # アプリの取得元。公開リポジトリのため認証はいらない
 variable "app_repository_url" {
   type    = string
-  default = "https://github.com/m-oka-system/mssql-todo-app.git"
+  default = "https://github.com/m-oka-system/microsoft-azure-iaas-part.git"
 }
 
 # 接続情報は拡張機能の protected_settings 経由で渡す

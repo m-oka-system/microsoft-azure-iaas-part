@@ -18,8 +18,8 @@ output "next_steps" {
          ssh -i ${local_sensitive_file.ssh_private_key.filename} ${module.vm.admin_username}@${module.vm.public_ip_address["vm01"]}
 
       4. アプリを取得して配置する（接続した VM 上で実行）
-         git clone --depth 1 https://github.com/m-oka-system/mssql-todo-app.git
-         cd mssql-todo-app
+         git clone --depth 1 https://github.com/m-oka-system/microsoft-azure-iaas-part.git
+         cd microsoft-azure-iaas-part
          sudo deploy/setup.sh --env-file ~/.env
 
       5. VM のパブリック IP アドレスを SQL サーバーのファイアウォール規則へ登録する（Azure ポータルで実行）

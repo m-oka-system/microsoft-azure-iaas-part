@@ -93,7 +93,7 @@ flowchart LR
 **アプリの動作に関わる範囲を中心に示します。** 補足資料（`reference/`）の中身は[README](../README.md)を参照してください。
 
 ```text
-mssql-todo-app/
+microsoft-azure-iaas-part/
 ├── README.md               # 教材全体の入口
 ├── pyproject.toml          # 依存パッケージの定義
 ├── uv.lock                 # バージョン固定
@@ -458,7 +458,7 @@ sequenceDiagram
 | 配置内容が変わる | 変わりません。`deploy/setup.sh` はコピーする対象を名指しします |
 | ディスクが減る   | 344 KB です。OS ディスクは 30 GB のため意味がありません        |
 
-**代わりに `git sparse-checkout set src deploy` の 1 手順が増えていました。** 得られるのは `~/mssql-todo-app` を `ls` したときの見た目だけです。
+**代わりに `git sparse-checkout set src deploy` の 1 手順が増えていました。** 得られるのは `~/microsoft-azure-iaas-part` を `ls` したときの見た目だけです。
 
 **`/opt/todo` へ配置されるのは、アプリの実行に必要なファイルだけです。** `deploy/setup.sh` が `src/` と直下 3 ファイル（`pyproject.toml`・`uv.lock`・`.python-version`）を名指しでコピーするため、`docs/` や `labs/` が作業ツリーにあっても配置対象には入りません。
 
