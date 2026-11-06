@@ -31,8 +31,14 @@ report() {
 # core.quotePath=false と -z が必須である
 # 既定では非 ASCII のパスが "\343\202\265..." へ変換され、実在しないパスとして黙って検査から外れる
 # reference/ は sectionNN.<日本語のセクション名>.md を使うため、既定のままだと丸ごと未検証になる
+#
+# 削除をコミットする前は --cached に消えたファイルが残る
+# 実体のないパスを渡すと grep が「No such file」を並べるため、ここで落とす
 list_files() {
-  git -c core.quotePath=false ls-files -z --cached --others --exclude-standard -- "$1"
+  git -c core.quotePath=false ls-files -z --cached --others --exclude-standard -- "$1" \
+    | while IFS= read -r -d '' file; do
+        [ -e "$file" ] && printf '%s\0' "$file"
+      done
 }
 
 # Terraform のルート（terraform.tf を持つディレクトリ）を列挙する
@@ -43,16 +49,6 @@ find_terraform_roots() {
 # モジュールを列挙する。ルートから参照されていないモジュールも検証の対象にする
 find_terraform_modules() {
   find labs/modules -mindepth 1 -maxdepth 1 -type d | sort
-}
-
-# 受講者に配らない検証用のラボ。手順書を持たないため README を要求しない
-readonly LABS_WITHOUT_README="labs/sections/base"
-
-requires_readme() {
-  case " ${LABS_WITHOUT_README} " in
-    *" $1 "*) return 1 ;;
-  esac
-  return 0
 }
 
 check_terraform() {
@@ -237,28 +233,6 @@ check_docs() {
     report "リポジトリ内リンク" 0
   fi
 
-  # ラボの検出は Terraform ルート起点にする。README を持たないラボも拾える
-  local root readme missing=""
-  while IFS= read -r root; do
-    requires_readme "$root" || continue
-    readme="${root}/README.md"
-    if [ ! -f "$readme" ]; then
-      missing="${missing}${root}: README.md がありません"$'\n'
-      continue
-    fi
-    local section
-    for section in 注意事項 確認 片付け; do
-      grep -q "^## ${section}" "$readme" || missing="${missing}${readme}: ${section}"$'\n'
-    done
-  done < <(find_terraform_roots)
-
-  if [ -n "$missing" ]; then
-    printf '%s' "$missing" >&2
-    report "ラボの必須の節" 1
-  else
-    report "ラボの必須の節" 0
-  fi
-
   # リポジトリ改名時の取りこぼしを防ぐ。旧名が残っていると curl と git clone が 404 になる
   # 対象は自リポジトリを取得する URL だけに絞る。他リポジトリへの参照リンクは対象外
   local expected old=""
@@ -280,16 +254,19 @@ check_docs() {
   fi
 
   # 受講者が最初に叩く 1 行が壊れていないか確かめる
-  # 手順書の curl・setup.sh の LAB_PATH・実際のディレクトリの 3 つが揃っている必要がある
-  local root lab_path url_path bad=""
+  # setup.sh の LAB_PATH・実際のディレクトリ・labs/README.md の一覧の 3 つが揃っている必要がある
+  local root lab_path bad=""
   while IFS= read -r root; do
     lab_path="$(grep -oE '^readonly LAB_PATH="[^"]+"' "${root}/setup.sh" | sed 's/.*="//; s/"$//')"
     [ "$lab_path" = "$root" ] || bad="${bad}${root}/setup.sh: LAB_PATH=${lab_path}"$'\n'
-
-    requires_readme "$root" || continue
-    url_path="$(grep -oE 'refs/heads/main/[^ ]*/setup\.sh' "${root}/README.md" | sed 's|refs/heads/main/||; s|/setup\.sh$||' | head -1)"
-    [ -z "$url_path" ] || [ "$url_path" = "$root" ] || bad="${bad}${root}/README.md: curl の URL が ${url_path}"$'\n'
   done < <(find_terraform_roots)
+
+  # 手順は動画で説明するため、受講者がパスを読む場所は labs/README.md の一覧だけである
+  # 実在しないパスが載っていると curl が 404 になる
+  local listed
+  while IFS= read -r listed; do
+    [ -d "$listed" ] || bad="${bad}labs/README.md: ${listed} が存在しません"$'\n'
+  done < <(grep -oE 'labs/sections/[A-Za-z0-9_-]+' labs/README.md | sort -u)
 
   if [ -n "$bad" ]; then
     printf '%s' "$bad" >&2

@@ -107,7 +107,7 @@ microsoft-azure-iaas-part/
 │   └── troubleshooting.md  # 症状別の対処
 ├── labs/                   # コース内ラボ（Terraform で環境を作る側の構成）
 │   ├── modules/            # 全ラボで共有するモジュール
-│   └── sections/           # 演習ごとの手順書と Terraform
+│   └── sections/           # 演習ごとの Terraform
 ├── scripts/
 │   ├── lab-setup.sh        # ラボ共通の起動処理
 │   └── check.sh            # コミット前の検証
@@ -118,12 +118,13 @@ microsoft-azure-iaas-part/
 │       ├── index.html      # 一覧と追加フォーム
 │       ├── error.html      # エラーの案内
 │       └── debug_info.html # 実行環境の表示（両方の画面から読み込む）
-└── deploy/
-    ├── README.md              # 配置と更新の手順
-    ├── setup.sh               # VM のセットアップ
-    ├── vmss-portal-setup.sh   # スケールセット用（ポータルへ貼り付ける）
-    ├── todo.service           # systemd unit
-    └── todo.nginx.conf        # nginx の設定
+├── deploy/
+│   ├── README.md              # 配置と更新の手順
+│   ├── setup.sh               # VM のセットアップ
+│   ├── vmss-portal-setup.sh   # スケールセット用（ポータルへ貼り付ける）
+│   ├── todo.service           # systemd unit
+│   └── todo.nginx.conf        # nginx の設定
+└── tests/                     # 教材の作成者が使うテスト（受講者の手順には出てきません）
 ```
 
 ## 3. 画面設計
@@ -438,9 +439,9 @@ sequenceDiagram
 
 **実行した端末にも残ります。** `terraform apply` は接続情報を `src/.env` へ、VM の秘密鍵を `~/.ssh/` へ、リソースの状態を `terraform.tfstate` へ書き出します。**受講者が Cloud Shell から実行した場合も同じです。**
 
-**Cloud Shell をストレージなし（エフェメラル）で起動した場合は、セッションが切れるとまとめて消えます。** ストレージをマウントしている場合と、作成者が手元で実行した場合は残ります。削除の手順は[ラボの片付け](../labs/sections/section99/README.md#片付け)にあります。
+**Cloud Shell をストレージなし（エフェメラル）で起動した場合は、セッションが切れるとまとめて消えます。** ストレージをマウントしている場合と、作成者が手元で実行した場合は残ります。削除の手順は[コース内ラボの「片付け」](../labs/README.md#片付け)にあります。
 
-**この経路ではアプリの取得と起動も同時に行います。** 手順は[コース内ラボの「Todo アプリの環境を Terraform で構築する」](../labs/sections/section99/README.md)にあります。
+**この経路ではアプリの取得と起動も同時に行います。** 拡張機能が実行する `setup.sh.tftpl` が、`git clone` から `deploy/setup.sh` の実行までを 1 回で終えます。
 
 **`.env` はリポジトリに含めません。** `.gitignore` の対象のため、`setup.sh` は `.env.sample` を雛形として配置するだけです。
 

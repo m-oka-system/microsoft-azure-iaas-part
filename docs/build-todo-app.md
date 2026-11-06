@@ -4,7 +4,7 @@ Azure VM（Ubuntu 24.04 LTS）に Todo アプリを構築します。**受講者
 
 **本書は手順書です。** ポート番号やタイムアウトの値、設計の理由は[設計書](design.md)を参照してください。
 
-**同じ環境を Terraform で自動構築する[コース内ラボ](../labs/sections/section99/README.md)があります。** ただし**コース内ラボ環境（Udemy のワークスペース）での実施が前提**で、ご自身のサブスクリプションで実行すると利用料金が発生します。ここでの手作業の手順と、ラボが自動化する範囲の対応は、ラボ側にまとめています。
+**本書で作る VM と SQL を Terraform で構築する[コース内ラボ](../labs/README.md)があります。** ただし**コース内ラボ環境（Udemy のワークスペース）での実施が前提**で、ご自身のサブスクリプションで実行すると利用料金が発生します。**ラボの操作は動画で説明します。**
 
 ## 前提条件
 
@@ -118,7 +118,7 @@ chmod 400 ~/.ssh/ssh-key.pem
 
 #### 5-2. `.env` を作る
 
-**[コース内ラボ](../labs/sections/section08/README.md)から進んできた場合、この手順は不要です。** `terraform apply` が接続情報を `~/microsoft-azure-iaas-part/src/.env` へ書き出しています。5-3 へ進んでください。
+**[コース内ラボ](../labs/README.md)から進んできた場合、この手順は不要です。** `terraform apply` が接続情報を `~/microsoft-azure-iaas-part/src/.env` へ書き出しています。5-3 へ進んでください。
 
 ```bash
 code ~/.env

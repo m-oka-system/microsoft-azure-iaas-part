@@ -40,7 +40,7 @@ VM では nginx がブラウザからの要求を受け、gunicorn へ転送し�
 ```text
 .
 ├── reference/   # 補足資料（セクションごとのコマンド集・参考サイト）
-├── labs/        # コース内ラボ（手順書と Terraform）
+├── labs/        # コース内ラボ（Terraform）
 │   ├── modules/ #   全ラボで共有する Terraform モジュール
 │   └── sections/
 ├── src/         # Todo アプリのソースコード
@@ -54,14 +54,14 @@ VM では nginx がブラウザからの要求を受け、gunicorn へ転送し�
 | 場所         | 答える問い                               |
 | ------------ | ---------------------------------------- |
 | `reference/` | セクションで出てきた用語とコマンドは何か |
-| `labs/`      | コース内ラボで何をするか                 |
+| `labs/`      | コース内ラボの環境をどう作るか           |
 | `docs/`      | どう作られているか / どうすれば動くか    |
 | `deploy/`    | VM の中へどう配置するか                  |
 
 ## 関連リポジトリ
 
-| リポジトリ                                                                   | 内容                   |
-| ---------------------------------------------------------------------------- | ---------------------- |
-| [udemy-in-course-labs](https://github.com/m-oka-system/udemy-in-course-labs) | 他コースのコース内ラボ |
+| リポジトリ                                                                         | 内容                             |
+| ---------------------------------------------------------------------------------- | -------------------------------- |
+| [udemy-in-course-labs](https://github.com/m-oka-system/udemy-in-course-labs)       | 他コースのコース内ラボ           |
 | [python-flask-mysql-todo](https://github.com/m-oka-system/python-flask-mysql-todo) | 移植元の Todo アプリ（MySQL 版） |
-| [udemy-azure-iaas](https://github.com/m-oka-system/udemy-azure-iaas)         | 旧版の補足資料         |
+| [udemy-azure-iaas](https://github.com/m-oka-system/udemy-azure-iaas)               | 旧版の補足資料                   |

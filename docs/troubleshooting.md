@@ -26,13 +26,13 @@
 
 VM に SSH で接続して実行します。
 
-| 目的                 | コマンド                             | 期待する結果                     |
-| -------------------- | ------------------------------------ | -------------------------------- |
-| ログの確認           | `sudo journalctl -u todo -f`         | 例外のトレースバックが確認できる |
-| サービスの状態確認   | `systemctl status todo`              | `Active: active (running)`       |
-| アプリの死活確認     | `curl http://127.0.0.1:8000/health`  | ホスト名を含む JSON              |
-| 待ち受けアドレス確認 | `sudo ss -ltnp \| grep 8000`         | `127.0.0.1:8000` になっている    |
-| nginx の状態確認     | `systemctl status nginx`             | `Active: active (running)`       |
+| 目的                 | コマンド                            | 期待する結果                     |
+| -------------------- | ----------------------------------- | -------------------------------- |
+| ログの確認           | `sudo journalctl -u todo -f`        | 例外のトレースバックが確認できる |
+| サービスの状態確認   | `systemctl status todo`             | `Active: active (running)`       |
+| アプリの死活確認     | `curl http://127.0.0.1:8000/health` | ホスト名を含む JSON              |
+| 待ち受けアドレス確認 | `sudo ss -ltnp \| grep 8000`        | `127.0.0.1:8000` になっている    |
+| nginx の状態確認     | `systemctl status nginx`            | `Active: active (running)`       |
 
 `journalctl -f` は新しいログを表示し続けます。**ログを見ながらブラウザを操作すると、どの操作で何が起きたかが分かります。** アクセスログも同じ場所に出ます。終了は `Ctrl + C` です。
 
@@ -281,11 +281,11 @@ sudo tail -30 /var/lib/waagent/custom-script/download/0/stderr
 **原因を直したら、同じ Cloud Shell のセッションで作り直します。**
 
 ```bash
-cd ~/microsoft-azure-iaas-part/labs/sections/section99
+cd ~/microsoft-azure-iaas-part/<ラボのパス>
 export TF_VAR_resource_group_name="<リソースグループ名>"
 terraform apply
 ```
 
 **`terraform destroy` は使いません。** 作りかけのリソースが残っていても `apply` は続きから進みます。片付けはリソースグループごとの削除に統一しています。
 
-**セッションが切れていた場合は、この方法が使えません。** `terraform.tfstate` が消えているためです。**Azure ポータルでリソースグループごと削除してから、[コース内ラボ](../labs/sections/section99/README.md)をやり直してください。**
+**セッションが切れていた場合は、この方法が使えません。** `terraform.tfstate` が消えているためです。**Azure ポータルでリソースグループごと削除してから、[コース内ラボ](../labs/README.md)をやり直してください。**
