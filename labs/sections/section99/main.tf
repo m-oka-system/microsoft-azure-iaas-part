@@ -69,7 +69,7 @@ module "mssql_server" {
   source              = "../../modules/mssql_server"
   resource_group_name = data.azurerm_resource_group.this.name
   location            = var.location
-  name                = "sql-${random_string.suffix.result}"
+  name                = "sql-${local.suffix}"
 
   # VM と SSH を許可した端末からの接続（ポータルのクエリエディター用）を許可する
   firewall_rule = merge(

@@ -66,7 +66,7 @@ module "mssql_server" {
   source              = "../../modules/mssql_server"
   resource_group_name = data.azurerm_resource_group.this.name
   location            = var.location
-  name                = "sql-${random_string.suffix.result}"
+  name                = "sql-${local.suffix}"
 
   # ファイアウォール規則は作らない
   # 送信元 IP の登録は受講者がハンズオンで実施する
