@@ -58,7 +58,7 @@ variable "db_password" {
 variable "vm" {
   type = map(object({
     name                            = string
-    vm_size                         = optional(string, "Standard_B1s")
+    vm_size                         = optional(string, "Standard_F1als_v7")
     zone                            = optional(string, "1")
     allow_extension_operations      = optional(bool, true)
     disable_password_authentication = optional(bool, true)

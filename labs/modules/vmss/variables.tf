@@ -34,7 +34,7 @@ variable "network_security_group_id" {
 variable "vmss" {
   type = object({
     name     = string
-    sku_name = optional(string, "Standard_F1as_v7")
+    sku_name = optional(string, "Standard_F1als_v7")
     # 振り分けを目で確認するため、既定で 2 台にする
     instances = optional(number, 2)
     zones     = optional(list(string), ["1", "2", "3"])
